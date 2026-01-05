@@ -3,7 +3,7 @@
  * Handles all communication with the backend endpoints
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://vscode-internal-36100-beta.beta01.cloud.kavia.ai:3001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://vscode-internal-21009-beta.beta01.cloud.kavia.ai:3001';
 
 /**
  * PUBLIC_INTERFACE
@@ -13,7 +13,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://vscode-internal-3
  */
 export const uploadResume = async (file) => {
   const formData = new FormData();
-  formData.append('resume', file);
+  formData.append('file', file);
 
   try {
     const response = await fetch(`${API_BASE_URL}/upload`, {
