@@ -27,8 +27,16 @@ function App() {
 
     try {
       const response = await uploadResume(file);
-      setResumeText(response.text);
-      showNotification('✅ Resume uploaded successfully!', 'success');
+      // Backend returns 'text' field with extracted text
+      const extractedText = response.text || '';
+      setResumeText(extractedText);
+      
+      if (extractedText && extractedText.trim().length > 0) {
+        showNotification('✅ Resume uploaded successfully!', 'success');
+      } else {
+        setError('Failed to extract text from the uploaded file');
+        showNotification('❌ No text extracted from resume', 'error');
+      }
     } catch (err) {
       setError(err.message);
       showNotification('❌ Failed to upload resume', 'error');
@@ -41,7 +49,12 @@ function App() {
    * Handle text paste
    */
   const handleTextPaste = (text) => {
-    setResumeText(text);
+    if (!text || text.trim().length === 0) {
+      setError('Please provide valid resume text');
+      return;
+    }
+    
+    setResumeText(text.trim());
     setAnalysisResults(null);
     showNotification('✅ Resume text saved!', 'success');
   };
@@ -50,8 +63,16 @@ function App() {
    * Handle resume analysis
    */
   const handleAnalyze = async (jobRole) => {
-    if (!resumeText) {
+    // Client-side validation
+    if (!resumeText || resumeText.trim().length === 0) {
       setError('Please upload or paste your resume first');
+      showNotification('❌ Resume text is required', 'error');
+      return;
+    }
+
+    if (!jobRole || jobRole.trim().length === 0) {
+      setError('Please enter a job role');
+      showNotification('❌ Job role is required', 'error');
       return;
     }
 

@@ -41,6 +41,15 @@ export const uploadResume = async (file) => {
  * @returns {Promise<Object>} - Analysis results from Gemini AI
  */
 export const analyzeResume = async (resumeText, jobRole) => {
+  // Validate inputs before sending
+  if (!resumeText || typeof resumeText !== 'string' || resumeText.trim().length === 0) {
+    throw new Error('Resume text is required and must be a non-empty string');
+  }
+
+  if (!jobRole || typeof jobRole !== 'string' || jobRole.trim().length === 0) {
+    throw new Error('Job role is required and must be a non-empty string');
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/analyze`, {
       method: 'POST',
@@ -48,8 +57,8 @@ export const analyzeResume = async (resumeText, jobRole) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        resumeText,
-        jobRole,
+        text: resumeText.trim(),  // Backend expects 'text', not 'resumeText'
+        jobRole: jobRole.trim(),
       }),
     });
 
